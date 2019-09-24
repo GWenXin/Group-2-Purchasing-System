@@ -5,9 +5,15 @@
     <form class="quotationfind" action="fillingquotation" method="get">
 
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="re_of_quo_id" id="re_of_quo_id" placeholder="Request For Quotation ID" aria-label="Request For Quotation ID"
-                   aria-describedby="button-addon2">
+         <!--<input type="text" class="form-control" name="re_of_quo_id" id="re_of_quo_id" placeholder="Request For Quotation ID" aria-label="Request For Quotation ID"
+                   aria-describedby="button-addon2">-->
+          <select class="form-control" name="re_of_quo_id" >
+              {% for requestquotation in requestquotation %}
+              <option value="{{requestquotation.request_for_quotation_id}}">{{requestquotation.request_for_quotation_id}}</option>
+              {% endfor %}
+          </select>            
             <div class="input-group-append">
+                <br/>
                 <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
             </div>
         </div>

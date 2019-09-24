@@ -5,9 +5,15 @@
     <form class="quotationfind" action="fillingpurchaseorder" method="get">
 
         <div class="input-group mb-3">
-          <input type="text" class="form-control" name="quo_id" id="quo_id" placeholder="Quotation ID" aria-label="Quotation ID"
-            aria-describedby="button-addon2">
+      <!-- <input type="text" class="form-control" name="quo_id" id="quo_id" placeholder="Quotation ID" aria-label="Quotation ID"
+            aria-describedby="button-addon2">-->
+         <select class="form-control" name="quo_id" >
+              {% for quotation in quotation %}
+              <option value="{{quotation.quotation_id}}">{{quotation.quotation_id}}</option>
+              {% endfor %}
+          </select>
           <div class="input-group-append">
+              <br/>
            <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
           </div>
         </div>

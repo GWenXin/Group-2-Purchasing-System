@@ -23,8 +23,10 @@ import datetime
 
 @login_required
 def deliveryorderform(request):
+    purorder=PurchaseOrder.objects.all()
     context = {
-            'title':'Delivery Order Form'
+            'title':'Delivery Order Form',
+            'purorder' : purorder
         }
     context['user'] = request.user
 
@@ -33,7 +35,7 @@ def deliveryorderform(request):
 
 @login_required
 def fillingdeliveryorder(request):
-
+    purorder=PurchaseOrder.objects.all()
     context = {}
     pur_id = request.GET['pur_id']
     do_id = random.randint(10000000,99999999)
@@ -49,7 +51,8 @@ def fillingdeliveryorder(request):
                 'purchase_order_id': pur_id, 
                 'staff_id' : staff.person_id,
                 'vendor_id': po.vendor_id.vendor_id,
-                'rows':item_list
+                'rows':item_list,
+                'purorder' : purorder
             }
 
         return render(request,'DeliveryOrder/deliveryorderform.html',context)
@@ -127,7 +130,7 @@ def deliveryorderconfirmation(request):
             'rows' : items,
             'staff_info' : staff,
             'vendor_info' : vendor_info,
-            'description' : description
+            'description' : description,
         }
 
 

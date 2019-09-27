@@ -8,7 +8,7 @@
             <label class="labelpodetails">Time Created: </label>
             <label>{{time_created}}</label>
         </div>
-    <form class="purchaseordersubmission margintop" action="menu" method="GET">
+    <form class="purchaseordersubmission margintop" action="menu" method="POST">
      {% csrf_token %}
         <div class="row">
            <div class="col">
@@ -30,12 +30,12 @@
         </div>
         <div class="row margintop">
             <div class="col">
-                <label class="labelpodetails">Shipping Instructions</label>
-               <textarea class="form-control potextarea" name="shipping_inst" id="shipping_inst" placeholder="Shipping Instructions (If applicable)" readonly >{{shipping_inst}}</textarea>
+                <label class="labelpodetails">Invoice Status</label>
+               <textarea class="form-control potextarea" name="status" id="status" placeholder="Shipping Instructions (If applicable)">{{invoice_status}}</textarea>
             </div>
             <div class="col">
                 <label class="labelpodetails">Description</label>
-                <textarea class="form-control potextarea" name="description" id="description" placeholder="Purchase Order Description (If applicable)" readonly>{{description}}</textarea>
+                <textarea class="form-control potextarea" name="description" id="description" placeholder="Purchase Order Description (If applicable)">{{description}}</textarea>
             </div>
         </div>
 
@@ -72,6 +72,7 @@
           </tfoot>
         </table>
         <div class="margintop">
+		<button type="submit" class="btn btn-success btn-square buttonsize" formaction="/invoiceupdate">Update</button>
             <button type="submit" class="btn btn-info buttonsize">Close</button>
         </div>
 

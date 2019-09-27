@@ -16,7 +16,7 @@ from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.request import QueryDict
 from decimal import Decimal
-from prettytable import PrettyTable
+#from prettytable import PrettyTable
 from django.core.mail import send_mail
 from django.conf import settings
 import random
@@ -32,7 +32,6 @@ def requestforquotationform(request):
     return render(request,'RequestForQuotation/requestforquotationform.html',context)
 
 @login_required
-
 def fillingrequestforquotation(request):
 
     context = {}
@@ -248,13 +247,12 @@ def requestforquotationdetails(request):
             'time_created': current_time,
             'description' : description
         }
-
     return render(request,'RequestForQuotation/requestforquotationdetails.html',context)
 
 def requestforquotationhistorydetails(request):
 
     print(request.body)
-    pk = request.GET['rfq_id']
+    pk = request.GET['req_id']
     request_for_quotation = RequestForQuotation.objects.get(request_for_quotation_id = pk)
     items = RequestForQuotationItem.objects.filter(request_for_quotation_id = pk)
 
@@ -273,7 +271,7 @@ def requestforquotationhistorydetails(request):
             'time_created': request_for_quotation.time_created,
             'description' : request_for_quotation.description
         }
-  
+
     return render(request,'RequestForQuotation/requestforquotationhistorydetails.html',context)
 
 def requestforquotationhistory(request):
@@ -286,3 +284,52 @@ def requestforquotationhistory(request):
         }
     return render(request,'RequestForQuotation/requestforquotationhistory.html',context)
 
+
+def requestforhistoryupdate(request):
+    rfq_id = request.POST['request_for_quotation_id']
+    request_for_quotation = RequestForQuotation.objects.get(request_for_quotation_id = rfq_id)
+
+    purchase_requisition_id = request.POST['purchase_requisition_id']
+    vendor_id = request_for_quotation.vendor_id.vendor_id
+    staff_id = request_for_quotation.person_id.person_id
+    description = request.POST['description']
+    purchase_requisition = PurchaseRequisition.objects.get(pr_id = purchase_requisition_id)
+    staff_info = request_for_quotation.person_id
+    vendor_info = request_for_quotation.vendor_id
+
+    grand_total = request_for_quotation.total_price
+    current_time = request_for_quotation.time_created
+
+    # push the data to the database 
+    print(current_time)
+    rfq_info = RequestForQuotation(request_for_quotation_id = rfq_id, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            purchase_requisition_id = purchase_requisition)
+    rfq_info.save()
+    
+    # info pass to html
+    print(request.body)
+    pk = rfq_id
+    request_for_quotation = RequestForQuotation.objects.get(request_for_quotation_id = pk)
+    items = RequestForQuotationItem.objects.filter(request_for_quotation_id = pk)
+
+    print(request_for_quotation.person_id)
+    context = {
+            'title': 'Request For Quotation Details',
+            'purchase_requisition_id' : request_for_quotation.purchase_requisition_id.pr_id,
+            'request_for_quotation_id' : pk,
+            'staff_id' : request_for_quotation.person_id.person_id,
+            'vendor_id' : request_for_quotation.vendor_id.vendor_id,
+            'rows' : items,
+            'staff_info' : request_for_quotation.person_id,
+            'vendor_info' : request_for_quotation.vendor_id,
+            'grand_total': request_for_quotation.total_price,
+            'time_created': request_for_quotation.time_created,
+            'description' : request_for_quotation.description
+        }
+
+    return render(request,'RequestForQuotation/requestforquotationhistorydetails.html',context)

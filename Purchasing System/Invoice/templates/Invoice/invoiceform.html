@@ -3,11 +3,12 @@
 {% block content %}
 <div class="formpurchaseorder margintop">
     <form class="quotationfind" action="fillinginvoice" method="get">
-
+        <br />
         <div class="input-group mb-3">
             <!--<input type="text" class="form-control" name="pur_id" id="pur_id" placeholder="Purchase Order ID" aria-label="Purchase Order ID"
                    aria-describedby="button-addon2">-->
-          <select class="form-control" name="pur_id" >
+            <label>Purchase Order ID</label>
+            <select class="form-control" name="pur_id" >
               {% for purorder in purorder %}
               <option value="{{purorder.purchase_order_id}}">{{purorder.purchase_order_id}}</option>
               {% endfor %}
@@ -17,37 +18,46 @@
                 <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
             </div>
         </div>
-
-
-    </form>
+        
     <p>{{error}}</p>
 
     <form class="purchaseordersubmission" action="invoiceconfirmation" method="POST">
         {% csrf_token %}
         <div class="row margintop">
-          
-            <div class="col">
-                <input type="text" class="poform-control" name="invoice_id" value="{{invoice_id}}" placeholder="Invoice ID">
-            </div>
-            <div class="col">
-              <textarea type="text" class="poform-control" name="purchase_order_id" placeholder="Purchase Order ID">{{purchase_order_id}}</textarea>
-            </div>
-            <div class="col">
-                <textarea type="text" class="poform-control" name="staff_id" placeholder="Staff ID">{{staff_id}}</textarea>
-            </div>
-            <div class="col">
-                <textarea type="text" class="poform-control" name="vendor_id" placeholder="Vendor ID">{{vendor_id}}</textarea>
-            </div>
- 
-           
+            <table>
+            <thead>
+                <tr>
+                    <td>
+                        <h4>Invoice ID</h4>
+                        <input type="text" class="poform-control" name="invoice_id" value="{{invoice_id}}">
+                    </td> 
+                    <td>
+                        <h4>Purchase Order ID</h4>
+                        <input type="text" class="poform-control" name="purchase_order_id" value="{{purchase_order_id}}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Staff ID</h4>
+                        <textarea type="text" class="poform-control" name="staff_id">{{staff_id}}</textarea>
+                    </td>
+                    <td>
+                        <h4>Vendor ID</h4>
+                        <textarea type="text" class="poform-control" name="vendor_id">{{vendor_id}}</textarea>
+                    </td>
+                </tr>                
+            </thead>            
+        </table>
+                  
         </div>
-
+  
         <div class="row margintop">
             <div class="col">
+                <h4>Invoice Description (If applicable)</h4>
                 <textarea type="text" class="form-control" name="description" id="description" placeholder="Invoice Description (If applicable)"></textarea>
             </div>
         </div>
-
+    
         <table class="table table-striped margintop" name="items" id="items">
             <thead>
                 <tr>

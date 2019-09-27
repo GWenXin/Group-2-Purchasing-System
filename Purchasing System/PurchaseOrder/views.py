@@ -19,7 +19,6 @@ from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.request import QueryDict
 from decimal import Decimal
-from prettytable import PrettyTable
 import random
 import datetime 
 from django.contrib.auth.models import User
@@ -298,3 +297,53 @@ def purchaseorderhistory(request):
             'rows':purchase_orders
         }
     return render(request,'PurchaseOrder/purchaseorderhistory.html',context)
+
+def purchaseorderupdate(request):
+    po_id = request.POST['purchase_order_id']
+    pk = po_id
+    purchase_order = PurchaseOrder.objects.get(purchase_order_id = pk)
+
+    quotation = request.POST['quotation_id']
+    grand_total = purchase_order.total_price
+    vendor_id = purchase_order.vendor_id.vendor_id
+    staff_id = purchase_order.person_id.person_id,
+    shipping_inst = request.POST['shipping_inst']
+    description = request.POST['description']
+    po = PurchaseOrder.objects.get(purchase_order_id = po_id)
+    staff_info = purchase_order.person_id
+    vendor_info = purchase_order.vendor_id
+    
+    # push the data to the database 
+    current_time = purchase_order.time_created
+    print(current_time)
+    po_info = PurchaseOrder(purchase_order_id = po_id, 
+                            shipping_instructions = shipping_inst, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            quotation_id = purchase_order.quotation_id)
+    po_info.save()
+    
+    # info pass to html
+    print(request.body)
+    purchase_order = PurchaseOrder.objects.get(purchase_order_id = pk)
+    items = PurchaseOrderItem.objects.filter(purchase_order_id = pk)
+    staff = Person.objects.get(person_id=purchase_order.person_id.person_id)
+
+    context = {
+
+            'title': 'Purchase Order Details',
+            'quotation_id' : purchase_order.quotation_id.quotation_id,
+            'purchase_order_id' : pk,
+            'shipping_inst' : purchase_order.shipping_instructions,
+            'rows' : items,
+            'staff' : staff,
+            'vendor_info' : purchase_order.vendor_id,
+            'grand_total': purchase_order.total_price,
+            'time_created': purchase_order.time_created,
+            'description' : purchase_order.description
+        }
+  
+    return render(request,'PurchaseOrder/purchaseorderhistorydetails.html',context)

@@ -20,7 +20,6 @@ from decimal import Decimal
 import random
 import datetime 
 
-
 @login_required
 def deliveryorderform(request):
     purorder=PurchaseOrder.objects.all()
@@ -31,7 +30,6 @@ def deliveryorderform(request):
     context['user'] = request.user
 
     return render(request,'DeliveryOrder/deliveryorderform.html',context)
-
 
 @login_required
 def fillingdeliveryorder(request):
@@ -130,7 +128,7 @@ def deliveryorderconfirmation(request):
             'rows' : items,
             'staff_info' : staff,
             'vendor_info' : vendor_info,
-            'description' : description,
+            'description' : description
         }
 
 
@@ -230,6 +228,7 @@ def deliveryorderdetails(request):
 
     return render(request,'DeliveryOrder/deliveryorderdetails.html',context)
 
+
 def deliveryorderhistorydetails(request):
 
     print(request.body)
@@ -265,3 +264,58 @@ def deliveryorderhistory(request):
             'rows':delivery_orders
         }
     return render(request,'DeliveryOrder/deliveryorderhistory.html',context)
+
+	
+def deliveryorderupdate(request):
+    do_id = request.POST['delivery_order_id']
+    pk = do_id
+    delivery_order = DeliveryOrder.objects.get(delivery_order_id = pk)
+
+    do_id = request.POST['delivery_order_id']
+    po_id = request.POST['purchase_order_id']
+    grand_total = delivery_order.total_price
+    vendor_id = delivery_order.vendor_id.vendor_id
+    staff_id = delivery_order.person_id.person_id,
+    shipping_inst = request.POST['shipping_inst']
+    description = request.POST['description']
+    po = PurchaseOrder.objects.get(purchase_order_id = po_id)
+    staff_info = delivery_order.person_id
+    vendor_info = delivery_order.vendor_id
+    
+    # push the data to the database 
+    current_time = delivery_order.time_created
+    print(current_time)
+    do_info = DeliveryOrder(delivery_order_id = do_id, 
+                            shipping_instructions = shipping_inst, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            purchase_order_id = po)
+    do_info.save()
+    
+    # info pass to html
+    print(request.body)
+    pk = do_id
+    delivery_order = DeliveryOrder.objects.get(delivery_order_id = pk)
+    items = DeliveryOrderItem.objects.filter(delivery_order_id = pk)
+
+    print(delivery_order.person_id)
+    context = {
+
+            'title': 'Delivery Order Details',
+            'purchase_order_id' : delivery_order.purchase_order_id.purchase_order_id,
+            'delivery_order_id' : pk,
+            'staff_id' : delivery_order.person_id.person_id,
+            'vendor_id' : delivery_order.vendor_id.vendor_id,
+            'shipping_inst' : delivery_order.shipping_instructions,
+            'rows' : items,
+            'staff_info' : delivery_order.person_id,
+            'vendor_info' : delivery_order.vendor_id,
+            'grand_total': delivery_order.total_price,
+            'time_created': delivery_order.time_created,
+            'description' : delivery_order.description
+        }
+
+    return render(request,'DeliveryOrder/deliveryorderhistorydetails.html',context)

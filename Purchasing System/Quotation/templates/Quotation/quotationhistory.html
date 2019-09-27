@@ -21,16 +21,15 @@
                     <td>{{r.person_id.person_id}}</td>
                     <td>{{r.vendor_id}}</td>
                     <td>{{r.time_created}}</td>
-                    <td><button type="submit" class="btn btn-info buttonsize1">Issue Purchase Order</button></td>
+                    <td><button type="submit" name="quo_id" class="btn btn-info" value="{{r.quotation_id}}" formaction="/issuepurchaseorder">Issue Purchase Order</button></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        </form>
         <div class="margintop">
             <a type="submit" class="btn btn-info" href="/menu">Back</a>
         </div>
-    
+    </form>
 
 </div>
 

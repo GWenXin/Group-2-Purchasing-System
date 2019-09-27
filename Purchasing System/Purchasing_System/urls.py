@@ -87,6 +87,7 @@ urlpatterns = [
     url(r'^purchaseorderdetails', PurchaseOrder.views.purchaseorderdetails, name="purchase_order_details"),
     url(r'^purchaseorderhistorydetails', PurchaseOrder.views.purchaseorderhistorydetails, name='purchase_order_history_details'),
     url(r'^purchaseorderhistory', PurchaseOrder.views.purchaseorderhistory, name="purchase_order_history"),
+	    url(r'^purchaseorderupdate', PurchaseOrder.views.purchaseorderupdate, name="purchase_order_update"),
     #delivery order
     url(r'^deliveryorderform$', DeliveryOrder.views.deliveryorderform, name="delivery_order_form"),
     url(r'^fillingdeliveryorder', DeliveryOrder.views.fillingdeliveryorder, name="fill_delivery_order_form"),

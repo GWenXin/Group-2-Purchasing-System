@@ -303,9 +303,35 @@ def purchaseorderhistory(request):
     return render(request,'PurchaseOrder/purchaseorderhistory.html',context)
 
 def purchaseorderupdate(request):
+    po_id = request.POST['purchase_order_id']
+    pk = po_id
+    purchase_order = PurchaseOrder.objects.get(purchase_order_id = pk)
 
+    quotation = request.POST['quotation_id']
+    grand_total = purchase_order.total_price
+    vendor_id = purchase_order.vendor_id.vendor_id
+    staff_id = purchase_order.person_id.person_id,
+    shipping_inst = request.POST['shipping_inst']
+    description = request.POST['description']
+    po = PurchaseOrder.objects.get(purchase_order_id = po_id)
+    staff_info = purchase_order.person_id
+    vendor_info = purchase_order.vendor_id
+    
+    # push the data to the database 
+    current_time = purchase_order.time_created
+    print(current_time)
+    po_info = PurchaseOrder(purchase_order_id = po_id, 
+                            shipping_instructions = shipping_inst, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            quotation_id = purchase_order.quotation_id)
+    po_info.save()
+    
+    # info pass to html
     print(request.body)
-    pk = request.GET['po_id']
     purchase_order = PurchaseOrder.objects.get(purchase_order_id = pk)
     items = PurchaseOrderItem.objects.filter(purchase_order_id = pk)
     staff = Person.objects.get(person_id=purchase_order.person_id.person_id)
@@ -323,59 +349,5 @@ def purchaseorderupdate(request):
             'time_created': purchase_order.time_created,
             'description' : purchase_order.description
         }
-      # push the Purchase Order data to the database 
-    current_time = datetime.datetime.now() 
-    print(current_time)
-    po_info = PurchaseOrder(purchase_order_id = po_id, 
-                            shipping_instructions = shipping_inst, 
-                            time_created = current_time,
-                            total_price = grand_total, 
-                            person_id = staff,
-                            description = description,
-                            vendor_id = vendor_info, 
-                            quotation_id = quotation)
-    po_info.save()
-
-    # push the Purchase Order item data to the database
-    purchase_order = PurchaseOrder.objects.get(purchase_order_id = po_id)
-    for item in items:
-        item_info = Item.objects.get(item_id = item['item_id'])
-        po_item_info = PurchaseOrderItem(purchase_order_id = purchase_order, 
-                                         item_id = item_info, 
-                                         quantity = item['quantity'], 
-                                         unit_price = item['unit_price'],
-                                         total_price = item['total_price'])
-        po_item_info.save()
-
-
-    #sending email to vendor
-    x = PrettyTable()
-
-    x.field_names = ["Item ID","Item Name","Quantity","Unit Price","Total Price"]
-
-    for item in items:
-        x.add_row([item['item_id'],item['item_name'],item['quantity'],item['unit_price'],item['total_price']])
-
-    subject = 'PURCHASE ORDER INFORMATION: '+ po_id
-    message = 'This is the Purchase Order Information: \n'+'Person In Charge: '+staff.person_name+'\n'+'Ship to:'+staff.person_address+ '\n' +'Purchase Order Number: ' + po_id + '\n'+'Quotation ID: ' + quotation.quotation_id + '\n'+'Time Issued: ' + str(current_time) + '\n'+'Vendor ID: ' + vendor_id + '\n'+'Description: ' + description + '\n'+'Shipping Instructions: ' + shipping_inst + '\n'+ str(x) +'\n'
-
-    email_from = settings.EMAIL_HOST_USER
-    recipient_list = [vendor_info.vendor_email,]
-    send_mail( subject, message, email_from, recipient_list )
-
-    # info pass to html
-    context = {
-            'title': 'Purchase Order Details',
-            'quotation_id' : quotation_id,
-            'purchase_order_id' : po_id,
-            'vendor_id' : vendor_id,
-            'shipping_inst' : shipping_inst,
-            'rows' : items,
-            'staff' : staff,
-            'vendor_info' : vendor_info,
-            'grand_total': grand_total,
-            'time_created': current_time,
-            'description' : description
-        }
   
-    return render(request,'PurchaseOrder/purchaseorderupdate.html',context)
+    return render(request,'PurchaseOrder/purchaseorderhistorydetails.html',context)

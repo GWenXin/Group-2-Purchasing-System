@@ -19,6 +19,7 @@ from django.views.generic import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 from django.http.request import QueryDict
 from decimal import Decimal
+from prettytable import PrettyTable
 import random
 import datetime 
 from django.contrib.auth.models import User
@@ -28,8 +29,10 @@ from django.conf import settings
 
 @login_required
 def purchaseorderform(request):
+    quotation=Quotation.objects.all()
     context = {
-            'title':'Purchase Order Form'
+            'title':'Purchase Order Form',
+            'quotation' : quotation
         }
 
     return render(request,'PurchaseOrder/purchaseorderform.html',context)
@@ -37,7 +40,7 @@ def purchaseorderform(request):
 
 @login_required
 def fillingpurchaseorder(request):
-
+    quotation=Quotation.objects.all()
     context = {}
     quo_id = request.GET['quo_id']
     po_id = 1001
@@ -55,7 +58,8 @@ def fillingpurchaseorder(request):
         print(purchaseorder)
 
         context = { 'error': 'The purchase order is already Issued! Purchase Order Number: ' + purchaseorder.purchase_order_id,
-                    'title': 'Purchase Order Form'
+                    'title': 'Purchase Order Form',
+                    'quotation' : quotation
             }
         return render(request,'PurchaseOrder/purchaseorderform.html',context)
 

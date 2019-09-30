@@ -24,8 +24,11 @@ import datetime
 
 @login_required
 def quotationform(request):
+
+    requestquotation=RequestForQuotation.objects.all()
     context = {
-            'title':'Quotation Form'
+            'title':'Quotation Form',
+            'requestquotation' :requestquotation
         }
     context['user'] = request.user
 
@@ -34,7 +37,7 @@ def quotationform(request):
 
 @login_required
 def fillingquotation(request):
-
+    requestquotation=RequestForQuotation.objects.all()
     context = {}
     re_of_quo_id = request.GET['re_of_quo_id']
     quo_id = random.randint(1000000,9999999)
@@ -49,7 +52,8 @@ def fillingquotation(request):
                 'request_for_quotation_id': re_of_quo_id, 
                 'staff_id' : staff.person_id,
                 'vendor_id': request_for_quotations.vendor_id.vendor_id,
-                'rows':item_list
+                'rows':item_list,
+                'requestquotation' :requestquotation
             }
         return render(request,'Quotation/quotationform.html',context)
 

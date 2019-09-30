@@ -4,10 +4,18 @@
 <div class="formpurchaseorder margintop" >
     <form class="quotationfind" action="fillingpurchaseorder" method="get">
 
+        <br/>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" name="quo_id" id="quo_id" placeholder="Quotation ID" aria-label="Quotation ID"
-            aria-describedby="button-addon2" value="{{quo_id}}">
+      <!-- <input type="text" class="form-control" name="quo_id" id="quo_id" placeholder="Quotation ID" aria-label="Quotation ID"
+            aria-describedby="button-addon2">-->
+         <h4>Quotation ID</h4>
+         <select class="form-control" name="quo_id" >
+              {% for quotation in quotation %}
+              <option value="{{quotation.quotation_id}}">{{quotation.quotation_id}}</option>
+              {% endfor %}
+          </select>
           <div class="input-group-append">
+              <br/>
            <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
           </div>
         </div>
@@ -19,25 +27,41 @@
     <form class="purchaseordersubmission" action="purchaseorderconfirmation" method="POST">
         {% csrf_token %}
         <div class="row margintop">
-            <div class="col">
-                <input type="text" class="form-control" name="purchase_order_id" value="{{purchase_order_id}}" placeholder="Purchase Order ID">
-            </div>
-            <div class="col">
-                <textarea type="text" class="poform-control" name="quotation_id" placeholder="Quotation ID" readonly>{{quotation_id}}</textarea>
-            </div>
-            <div class="col">
-                <textarea type="text" class="poform-control" name="staff_id" placeholder="Staff ID" readonly>{{staff.person_id}}</textarea>
-            </div>
-            <div class="col">
-                <textarea type="text" class="poform-control" name="vendor_id" placeholder="Vendor ID" readonly>{{vendor_id}}</textarea>
-            </div>
+            <table>
+            <thead>
+                <tr>
+                    <td>
+                        <h4>Purchase Order ID</h4>
+                        <input type="text" class="form-control" name="purchase_order_id" value="{{purchase_order_id}}" >
+                    </td>                 
+                    <td>
+                        <h4>Quotation ID</h4>
+                        <input type="text" class="form-control" name="quotation_id" value="{{quotation_id}}" readonly>
+                    </td>                
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Staff ID</h4>
+                        <textarea type="text" class="poform-control" name="staff_id"  readonly>{{staff.person_id}}</textarea>
+                    </td>
+                    <td>
+                        <h4>Vendor ID</h4>
+                        <textarea type="text" class="poform-control" name="vendor_id" readonly>{{vendor_id}}</textarea>
+                    </td>
+                </tr>                
+            </thead>            
+        </table>
+           
+
         </div>
 
         <div class="row margintop">
             <div class="col">
+                <h4>Shipping Instructions (If applicable)</h4>
                 <textarea type="text" class="form-control" name="shipping_inst" id="shipping_inst" placeholder="Shipping Instructions (If applicable)"></textarea>
-            </div>
+            </div><br/>
             <div class="col">
+                <h4>Purchase Order Description (If applicable)</h4>
                 <textarea type="text" class="form-control" name="description" id="description" placeholder="Purchase Order Description (If applicable)"></textarea>
             </div>
         </div>

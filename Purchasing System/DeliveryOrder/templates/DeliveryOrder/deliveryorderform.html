@@ -3,11 +3,17 @@
 {% block content %}
 <div class="formpurchaseorder margintop" >
     <form class="quotationfind" action="fillingdeliveryorder" method="get">
-
+        <br/>
         <div class="input-group mb-3">
-          <input type="text" class="form-control" name="pur_id" id="pur_id" placeholder="Purchase Order ID" aria-label="Purchase Order ID"
-            aria-describedby="button-addon2">
+     <!--<input type="text" class="form-control" name="pur_id" id="pur_id" placeholder="Purchase Order ID" aria-label="Purchase Order ID"
+            aria-describedby="button-addon2">-->
+          <select class="form-control" name="pur_id" >
+              {% for purorder in purorder %}
+              <option value="{{purorder.purchase_order_id}}">{{purorder.purchase_order_id}}</option>
+              {% endfor %}
+          </select>
           <div class="input-group-append">
+              <br />
            <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
           </div>
         </div>
@@ -19,6 +25,33 @@
     <form class="purchaseordersubmission" action="deliveryorderconfirmation" method="POST">
         {% csrf_token %}
         <div class="row margintop">
+            <table>
+            <thead>
+                <tr>
+                    <td>
+                        <h4>delivery Order ID</h4>
+                        <input type="text" class="form-control" name="delivery_order_id" value="{{delivery_order_id}}">
+                    </td>   
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Purchase Order ID</h4>
+                        <textarea type="text" class="poform-control" name="purchase_order_id" ">{{purchase_order_id}}</textarea>
+                    </td> 
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Staff ID</h4>
+                        <textarea type="text" class="poform-control" name="staff_id" >{{staff_id}}</textarea>
+                    </td>
+                    <td>
+                        <h4>Vendor ID</h4>
+                        <textarea type="text" class="poform-control" name="vendor_id" >{{vendor_id}}</textarea>
+                    </td>
+                </tr>                
+            </thead>            
+        </table>
+            <!--
             <div class="col">
                 <input type="text" class="form-control" name="delivery_order_id" value="{{delivery_order_id}}" placeholder="delivery Order ID">
             </div>
@@ -31,13 +64,16 @@
             <div class="col">
                 <textarea type="text" class="poform-control" name="vendor_id" placeholder="Vendor ID">{{vendor_id}}</textarea>
             </div>
+          -->
         </div>
 
         <div class="row margintop">
             <div class="col">
+                <h4>Shipping Instructions (If applicable)</h4>
                 <textarea type="text" class="form-control" name="shipping_inst" id="shipping_inst" placeholder="Shipping Instructions (If applicable)"></textarea>
             </div>
             <div class="col">
+                <h4>Purchase Order Description (If applicable)</h4>
                 <textarea type="text" class="form-control" name="description" id="description" placeholder="Purchase Order Description (If applicable)"></textarea>
             </div>
         </div>

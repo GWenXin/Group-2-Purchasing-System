@@ -5,9 +5,16 @@
     <form class="quotationfind" action="fillingquotation" method="get">
 
         <div class="input-group mb-3">
-            <input type="text" class="form-control" name="re_of_quo_id" id="re_of_quo_id" placeholder="Request For Quotation ID" aria-label="Request For Quotation ID"
-                   aria-describedby="button-addon2">
+         <!--<input type="text" class="form-control" name="re_of_quo_id" id="re_of_quo_id" placeholder="Request For Quotation ID" aria-label="Request For Quotation ID"
+                   aria-describedby="button-addon2">-->
+          <h4>Request For Quotation ID</h4>
+          <select class="form-control" name="re_of_quo_id" >
+              {% for requestquotation in requestquotation %}              
+              <option value="{{requestquotation.request_for_quotation_id}}">{{requestquotation.request_for_quotation_id}}</option>
+              {% endfor %}
+          </select>            
             <div class="input-group-append">
+                <br/>
                 <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
             </div>
         </div>
@@ -19,6 +26,33 @@
     <form class="purchaseordersubmission" action="quotationconfirmation" method="POST">
         {% csrf_token %}
         <div class="row margintop">
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            <h4>Quotation ID</h4>
+                            <input type="text" class="form-control" name="quotation_id" value="{{quotation_id}}" >
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Request For Quotation ID</h4>
+                            <textarea type="text" class="poform-control" name="request_for_quotation_id">{{request_for_quotation_id}}</textarea>
+                        </td> 
+                    </tr>
+                    <tr>
+                        <td>
+                           <h4>Staff ID</h4>
+                           <textarea type="text" class="poform-control" name="staff_id">{{staff_id}}</textarea>
+                        </td>
+                        <td>
+                            <h4>Vendor ID</h4>
+                            <textarea type="text" class="poform-control" name="vendor_id">{{vendor_id}}</textarea>
+                        </td>
+                    </tr>
+                </thead>
+            </table>
+            <!--
             <div class="col">
                 <input type="text" class="form-control" name="quotation_id" value="{{quotation_id}}" placeholder="Quotation ID">
             </div>
@@ -31,10 +65,12 @@
             <div class="col">
                 <textarea type="text" class="poform-control" name="vendor_id" placeholder="Vendor ID">{{vendor_id}}</textarea>
             </div>
+            -->
         </div>
 
         <div class="row margintop">
             <div class="col">
+                <h4>Quotation Description (If applicable)</h4>
                 <textarea type="text" class="form-control" name="description" id="description" placeholder="Quotation Description (If applicable)"></textarea>
             </div>
         </div>

@@ -24,8 +24,11 @@ import datetime
 
 @login_required
 def invoiceform(request):
+
+    purorder=PurchaseOrder.objects.all()
     context = {
-            'title':'INVOICE AND PAYMENT FORM'
+            'title':'INVOICE AND PAYMENT FORM',
+            'purorder' : purorder
         }
     context['user'] = request.user
 
@@ -36,6 +39,8 @@ def invoiceform(request):
 def fillinginvoice(request):
 
     global responsesItems
+
+    purorder=PurchaseOrder.objects.all()
     context = {}
     pur_id = request.GET['pur_id']
     inv_id = random.randint(1000000,9999999)
@@ -49,7 +54,8 @@ def fillinginvoice(request):
                 'purchase_order_id': pur_id, 
                 'staff_id' : purchase_orders.person_id.person_id,
                 'vendor_id': purchase_orders.vendor_id.vendor_id,
-                'rows':item_list
+                'rows':item_list,
+                'purorder' : purorder
             }
 
         responsesItems = render(request,'Invoice/invoiceform.html',context).content

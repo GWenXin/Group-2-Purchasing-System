@@ -6,6 +6,7 @@ from datetime import datetime
 from django.conf.urls import url, include
 import django.contrib.auth.views
 from django.contrib import admin
+from django.views.generic.base import TemplateView
 
 import app.forms
 import app.views
@@ -24,7 +25,7 @@ import Invoice.views
 
 urlpatterns = [
     # Examples:
-    url(r'^$', app.views.home, name='home'),
+    url(r'^$', app.views.menu, name='menu'),
     url(r'^contact$', app.views.contact, name='contact'),
     url(r'^about$', app.views.about, name='about'),
     url(r'^login/$',
@@ -67,7 +68,8 @@ urlpatterns = [
     url(r'^requestforquotationconfirmation', RequestForQuotation.views.requestforquotationconfirmation, name="confirm_request_for_quotation"),
     url(r'^requestforquotationdetails', RequestForQuotation.views.requestforquotationdetails, name="request_for_quotation_details"),
     url(r'^requestforquotationhistorydetails', RequestForQuotation.views.requestforquotationhistorydetails, name='request_for_quotation_history_details'),
-    url(r'^requestforquotationhistory', RequestForQuotation.views.requestforquotationhistory, name="request_of_quotation_history"),
+    url(r'^requestforquotationhistory', RequestForQuotation.views.requestforquotationhistory, name="request_for_quotation_history"),
+    url(r'^requestforhistoryupdate', RequestForQuotation.views.requestforhistoryupdate, name="request_for_history_update"),
 
     #quotation
     url(r'^quotationform$', Quotation.views.quotationform, name="quotation_form"),
@@ -76,6 +78,8 @@ urlpatterns = [
     url(r'^quotationdetails', Quotation.views.quotationdetails, name="quotation_details"),
     url(r'^quotationhistorydetails', Quotation.views.quotationhistorydetails, name='quotation_history_details'),
     url(r'^quotationhistory', Quotation.views.quotationhistory, name="quotation_history"),
+    url(r'^quotationupdate', Quotation.views.quotationupdate, name="quotation_update"),
+    url(r'^issuepurchaseorder', Quotation.views.issuepurchaseorder, name="issue_purchase_order"),
 
     #purchase order
     url(r'^purchaseorderform$', PurchaseOrder.views.purchaseorderform, name="purchase_order_form"),
@@ -84,6 +88,7 @@ urlpatterns = [
     url(r'^purchaseorderdetails', PurchaseOrder.views.purchaseorderdetails, name="purchase_order_details"),
     url(r'^purchaseorderhistorydetails', PurchaseOrder.views.purchaseorderhistorydetails, name='purchase_order_history_details'),
     url(r'^purchaseorderhistory', PurchaseOrder.views.purchaseorderhistory, name="purchase_order_history"),
+    url(r'^purchaseorderupdate', PurchaseOrder.views.purchaseorderupdate, name="purchase_order_update"),
 
     #delivery order
     url(r'^deliveryorderform$', DeliveryOrder.views.deliveryorderform, name="delivery_order_form"),
@@ -92,6 +97,7 @@ urlpatterns = [
     url(r'^deliveryorderdetails', DeliveryOrder.views.deliveryorderdetails, name="delivery_order_details"),
     url(r'^deliveryorderhistorydetails', DeliveryOrder.views.deliveryorderhistorydetails, name='delivery_order_history_details'),
     url(r'^deliveryorderhistory', DeliveryOrder.views.deliveryorderhistory, name="delivery_order_history"),
+    url(r'^deliveryorderupdate', DeliveryOrder.views.deliveryorderupdate, name="delivery_order_update"),
 
     #Invoice
     url(r'^invoiceform$', Invoice.views.invoiceform, name="invoiceform"),
@@ -100,4 +106,5 @@ urlpatterns = [
     url(r'^invoicedetails', Invoice.views.invoicedetails, name="invoice_details"),
     url(r'^invoicehistorydetails', Invoice.views.invoicehistorydetails, name='invoice_history_details'),
     url(r'^invoicehistory', Invoice.views.invoicehistory, name="invoice_history"),
+    url(r'^invoiceupdate', Invoice.views.invoiceupdate, name="invoice_update"),
 ]

@@ -24,6 +24,7 @@ import datetime
 
 @login_required
 def invoiceform(request):
+
     purorder=PurchaseOrder.objects.all()
     context = {
             'title':'INVOICE AND PAYMENT FORM',
@@ -38,6 +39,7 @@ def invoiceform(request):
 def fillinginvoice(request):
 
     global responsesItems
+
     purorder=PurchaseOrder.objects.all()
     context = {}
     pur_id = request.GET['pur_id']
@@ -246,7 +248,8 @@ def invoicehistorydetails(request):
             'vendor_info' : invoice.vendor_id,
             'grand_total': invoice.total_price,
             'time_created': invoice.time_created,
-            'description' : invoice.description
+            'description' : invoice.description,
+            'invoice_status' : invoice.invoice_status
         }
   
     return render(request,'Invoice/invoicehistorydetails.html',context)
@@ -262,16 +265,41 @@ def invoicehistory(request):
     return render(request,'Invoice/invoicehistory.html',context)
 
 def invoiceupdate(request):
+    inv_id = request.POST['invoice_id']
+    pk = inv_id
+    invoice = Invoice.objects.get(invoice_id = pk)
 
+    po_id = request.POST['purchase_order_id']
+    grand_total = invoice.total_price
+    vendor_id = invoice.vendor_id.vendor_id
+    staff_id = invoice.person_id.person_id,
+    status = request.POST['status']
+    description = request.POST['description']
+    purchaseorder = PurchaseOrder.objects.get(purchase_order_id = po_id)
+    staff_info = invoice.person_id
+    vendor_info = invoice.vendor_id
+    
+    # push the data to the database 
+    current_time = invoice.time_created
+    print(current_time)
+    inv_info = Invoice(invoice_id = inv_id, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            purchase_order_id = purchaseorder,
+                            invoice_status = status
+                            )
+    inv_info.save()
+    
+    # info pass to html
     print(request.body)
-    pk = request.GET['inv_id']
-    #pk = request.POST.get('inv_id', False)
     invoice = Invoice.objects.get(invoice_id = pk)
     items = InvoiceItem.objects.filter(invoice_id = pk)
 
     print(invoice.person_id)
     context = {
-
             'title': 'Invoice Details',
             'purchase_order_id' : invoice.purchase_order_id.purchase_order_id,
             'invoice_id' : pk,
@@ -282,45 +310,8 @@ def invoiceupdate(request):
             'vendor_info' : invoice.vendor_id,
             'grand_total': invoice.total_price,
             'time_created': invoice.time_created,
-            'description' : invoice.description
+            'description' : invoice.description,
+            'invoice_status' : invoice.invoice_status
         }
-   # push the data to the database 
-    current_time = datetime.datetime.now() 
-    print(current_time)
-    inv_info = Invoice(invoice_id = inv_id, 
-                            time_created = current_time,
-                            total_price = grand_total, 
-                            person_id = staff_info,
-                            description = description,
-                            vendor_id = vendor_info, 
-                            purchase_order_id = purchaseorder,
-                            )
-    inv_info.save()
-
-    invoice = Invoice.objects.get(invoice_id = inv_id)
-    for item in items:
-        item_info = Item.objects.get(item_id = item['item_id'])
-        inv_item_info = InvoiceItem(invoice_id = invoice, 
-                                         item_id = item_info, 
-                                         quantity = item['quantity'], 
-                                         unit_price = item['unit_price'],
-                                         total_price = item['total_price'])
-        inv_item_info.save()
-
-
-    # info pass to html
-    context = {
-            'title': 'Invoice Details',
-            'purchase_order_id' : purchase_order_id,
-            'invoice_id' : inv_id,
-            'staff_id' : staff_id,
-            'vendor_id' : vendor_id,
-            'rows' : items,
-            'staff_info' : staff_info,
-            'vendor_info' : vendor_info,
-            'grand_total': grand_total,
-            'time_created': current_time,
-            'description' : description
-        }
-
-    return render(request,'Invoice/invoiceupdate.html',context)
+  
+    return render(request,'Invoice/invoicehistorydetails.html',context)

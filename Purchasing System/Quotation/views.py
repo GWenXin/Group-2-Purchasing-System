@@ -24,6 +24,7 @@ import datetime
 
 @login_required
 def quotationform(request):
+
     requestquotation=RequestForQuotation.objects.all()
     context = {
             'title':'Quotation Form',
@@ -36,6 +37,7 @@ def quotationform(request):
 
 @login_required
 def fillingquotation(request):
+
     requestquotation=RequestForQuotation.objects.all()
     context = {}
     re_of_quo_id = request.GET['re_of_quo_id']
@@ -51,6 +53,7 @@ def fillingquotation(request):
                 'request_for_quotation_id': re_of_quo_id, 
                 'staff_id' : staff.person_id,
                 'vendor_id': request_for_quotations.vendor_id.vendor_id,
+
                 'rows':item_list,
                 'requestquotation' :requestquotation
             }
@@ -249,3 +252,60 @@ def quotationhistory(request):
             'rows':quotations
         }
     return render(request,'Quotation/quotationhistory.html',context)
+
+def quotationupdate(request):
+
+    quo_id = request.POST['quotation_id']
+    pk = quo_id
+    quotation = Quotation.objects.get(quotation_id = pk)
+
+    quo_id = request.POST['quotation_id']
+    request_for_quotation_id = request.POST['request_for_quotation_id']
+    vendor_id = quotation.vendor_id.vendor_id
+    staff_id = quotation.person_id.person_id
+    grand_total = quotation.total_price
+    description = request.POST['description']
+    request_for_quotation = RequestForQuotation.objects.get(request_for_quotation_id = request_for_quotation_id)
+    staff_info = Person.objects.get(person_id = staff_id)
+    vendor_info = Vendor.objects.get(vendor_id = vendor_id)
+    
+    # push the data to the database 
+    current_time = quotation.time_created
+    print(current_time)
+    quo_info = Quotation(quotation_id = quo_id, 
+                            time_created = current_time,
+                            total_price = grand_total, 
+                            person_id = staff_info,
+                            description = description,
+                            vendor_id = vendor_info, 
+                            request_for_quotation_id = request_for_quotation)
+    quo_info.save()
+    
+    # info pass to html
+    print(request.body)
+    quotation = Quotation.objects.get(quotation_id = pk)
+    items = QuotationItem.objects.filter(quotation_id = pk)
+    context = {
+            'title': 'Quotation Details',
+            'request_for_quotation_id' : quotation.request_for_quotation_id.request_for_quotation_id,
+            'quotation_id' : pk,
+            'staff_id' : quotation.person_id.person_id,
+            'vendor_id' : quotation.vendor_id.vendor_id,
+            'rows' : items,
+            'staff_info' : quotation.person_id,
+            'vendor_info' : quotation.vendor_id,
+            'grand_total': quotation.total_price,
+            'time_created': quotation.time_created,
+            'description' : quotation.description
+        }
+  
+    return render(request,'Quotation/quotationhistorydetails.html',context)
+
+def issuepurchaseorder(request):
+    print(request.body)
+    pk = request.GET['quo_id']
+    context = {
+            'title':'Purchase Order Form',
+            'quo_id':pk
+        }
+    return render(request,'PurchaseOrder/purchaseorderform.html',context)
